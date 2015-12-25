@@ -20,6 +20,25 @@ suite('troute.lookup', function() {
     assert(match.params.name === 'john');
   });
 
+  test('can backtrack with complex trees', function() {
+    var r = troute();
+
+    r.add('user/:a',      1);
+    r.add('user/1/:a',    2);
+    r.add('user/:a/2/:c', 3);
+
+    var m = r.lookup('user/1');
+    assert(m.params.a === '1');
+
+    var m = r.lookup('user/1/2');
+    assert(m.params.a === '2');
+
+    var m = r.lookup('user/1/2/3');
+    console.log(m);
+    assert(m.params.a === '1');
+    assert(m.params.c === '3');
+  });
+
   test('parses the query parameters', function() {
     var r = troute();
 
