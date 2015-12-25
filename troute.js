@@ -58,9 +58,8 @@ troute = function() {
       if (a) return a;
     }
 
-    if (rules.param) {
-      return search(rules.param, rest, params.concat([part]));
-    }
+    return rules.param
+      && search(rules.param, rest, params.concat([part]));
   };
 
   return {
