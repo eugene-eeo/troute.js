@@ -1,8 +1,8 @@
 troute = function() {
-  function info() {
+  function Info() {
     return {
-      next: {},     // -> {String: Branch}
-      param: null,  // -> Branch|null
+      next: {},     // -> {String: Info}
+      param: null,  // -> Info|null
       route: null,
     };
   };
@@ -13,7 +13,7 @@ troute = function() {
     return url;
   };
 
-  var routes = info();
+  var routes = Info();
 
   function add(pattern, data) {
     var parts  = sanitise(pattern).split('/');
@@ -24,8 +24,8 @@ troute = function() {
       var part = parts[i];
       var capture = part[0] == ':';
       t = capture
-        ? t.param       || (t.param = info())
-        : t.next[part]  || (t.next[part] = info());
+        ? t.param       || (t.param = Info())
+        : t.next[part]  || (t.next[part] = Info());
       if (capture) params.push(part.slice(1));
     }
 
