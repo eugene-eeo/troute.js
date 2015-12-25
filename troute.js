@@ -1,6 +1,6 @@
 troute = function() {
   var escape = decodeURIComponent;
-  var info = function() {
+  function info() {
     return {
       next: {},
       param: null,
@@ -8,7 +8,7 @@ troute = function() {
     };
   };
 
-  var sanitise = function(url) {
+  function sanitise(url) {
     var hash = url.indexOf('#');
     if (~hash)                    url = url.slice(0, hash);
     if (~url.indexOf('/?'))       url = url.replace('/?', '?');
@@ -17,7 +17,7 @@ troute = function() {
     return url;
   };
 
-  var parse_qs = function(qs, res) {
+  function parse_qs(qs, res) {
     if (qs && res) {
       var query = qs.split('&');
       for (var i = 0; i < query.length; i++) {
@@ -29,7 +29,7 @@ troute = function() {
 
   var routes = info();
 
-  var add = function(pattern, data) {
+  function add(pattern, data) {
     var parts  = sanitise(pattern).split('/');
     var params = [];
     var t = routes;
@@ -55,7 +55,7 @@ troute = function() {
     return routes;
   };
 
-  var search = function(rules, pieces, params) {
+  function search(rules, pieces, params) {
     if (!pieces.length) {
       var route = rules.route;
       return route && {
@@ -79,15 +79,13 @@ troute = function() {
     }
   };
 
-  var lookup = function(url) {
-    var u = sanitise(url).split('?');
-    var t = search(routes, u[0].split('/'), []);
-    parse_qs(u[1], t);
-    return t;
-  };
-
   return {
     add: add,
-    lookup: lookup,
+    lookup: function(url) {
+      var u = sanitise(url).split('?');
+      var t = search(routes, u[0].split('/'), []);
+      parse_qs(u[1], t);
+      return t;
+    },
   };
 };
