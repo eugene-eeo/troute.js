@@ -45,7 +45,6 @@ troute = function() {
     if (!pieces.length) {
       var route = rules.route;
       return route && {
-        query: {},
         params: route.map(params),
         data: route.data,
       };
