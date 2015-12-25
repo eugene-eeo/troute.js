@@ -1,5 +1,4 @@
 troute = function() {
-  var escape = decodeURIComponent;
   function info() {
     return {
       next: {},     // -> {String: Branch}
@@ -23,11 +22,11 @@ troute = function() {
 
     for (var i = 0; i < parts.length; i++) {
       var part = parts[i];
-      var capture = p[0] == ':';
+      var capture = part[0] == ':';
       t = capture
         ? t.param       || (t.param = info())
         : t.next[part]  || (t.next[part] = info());
-      if (capture) params.push(p.slice(1));
+      if (capture) params.push(part.slice(1));
     }
 
     t.route = {
@@ -50,7 +49,7 @@ troute = function() {
       };
     }
 
-    var part = escape(pieces[0]);
+    var part = pieces[0];
     var rest = pieces.slice(1);
     var tree = rules.next[part.toLowerCase()];
 
@@ -67,7 +66,9 @@ troute = function() {
   return {
     add: add,
     lookup: function(url) {
-      return search(routes, sanitise(url).split('/'), []);
+      return search(routes,
+                    sanitise(url).split('/').map(decodeURIComponent),
+                    []);
     },
   };
 };
