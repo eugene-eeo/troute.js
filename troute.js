@@ -36,14 +36,6 @@ troute = function() {
     return o;
   }
 
-  var parse_url = function(url) {
-    var frags = sanitise(url).split('?');
-    return {
-      p: frags[0].split('/'),
-      q: frags[1],
-    };
-  };
-
   var routes = info();
 
   var add = function(pattern, data) {
@@ -55,8 +47,8 @@ troute = function() {
       var p = parts[i];
       var c = p[0] == ':';
       t = (c)
-        ? t.param    || (t.param = Branch())
-        : t.next[p]  || (t.next[p] = Branch());
+        ? t.param    || (t.param = info())
+        : t.next[p]  || (t.next[p] = info());
       if (c)
         params.push(p.slice(1));
     }
@@ -73,30 +65,37 @@ troute = function() {
     return routes;
   };
 
-  var lookup = function(url) {
-    var u = parse_url(url);
-    var t = routes;
-    var o = [];
-
-    for (var i = 0; i < u.p.length; i++) {
-      var p = escape(u.p[i]);
-      var q = t.next[p.toLowerCase()];
-      if (q) {
-        t = q;
-      } else if (t.param) {
-        t = t.param;
-        o.push(p);
-      } else {
-        return null;
-      }
+  var search = function(rules, pieces, params) {
+    if (!pieces.length) {
+      var route = rules.route;
+      return route && {
+        params: route.map(params),
+        data: route.data,
+      };
     }
 
-    var r = t.r;
-    return r && {
-      data: r.data,
-      params: r.map(o),
-      query: parse_qs(u.q),
-    };
+    var part = escape(pieces[0]);
+    var rest = pieces.slice(1);
+    var tree = rules.next[part.toLowerCase()];
+
+    if (tree) {
+      var a = search(tree, rest, params);
+      if (a)
+        return a;
+    }
+
+    if (rules.param) {
+      params.push(part);
+      return search(rules.param, rest, params);
+    }
+  };
+
+  var lookup = function(url) {
+    var u = sanitise(url).split('?');
+    var t = search(routes, u[0].split('/'), []);
+    if (t)
+      t.query = parse_qs(u[1]);
+    return t;
   };
 
   return {
