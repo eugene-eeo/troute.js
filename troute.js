@@ -2,8 +2,8 @@ troute = function() {
   var escape = decodeURIComponent;
   function info() {
     return {
-      next: {},
-      param: null,
+      next: {},     // -> {String: Branch}
+      param: null,  // -> Branch|null
       route: null,
     };
   };
@@ -22,12 +22,12 @@ troute = function() {
     var t = routes;
 
     for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
-      var c = p[0] == ':';
-      t = (c)
-        ? t.param    || (t.param = info())
-        : t.next[p]  || (t.next[p] = info());
-      if (c) params.push(p.slice(1));
+      var part = parts[i];
+      var capture = p[0] == ':';
+      t = capture
+        ? t.param       || (t.param = info())
+        : t.next[part]  || (t.next[part] = info());
+      if (capture) params.push(p.slice(1));
     }
 
     t.route = {
