@@ -47,10 +47,8 @@ troute = function() {
       var p = parts[i];
       var c = p[0] == ':';
       t = (c)
-        ? t.param    || (t.param = info())
+        ? t.param    || (params.push(p.slice(1)), t.param = info())
         : t.next[p]  || (t.next[p] = info());
-      if (c)
-        params.push(p.slice(1));
     }
 
     t.route = {
