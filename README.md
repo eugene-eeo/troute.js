@@ -11,7 +11,7 @@ in other router projects.
 
 ```js
 var t = troute();
-t.add('/user/:name',          d1);
+t.add('/user/:name', d1);
 t.add('/user/john/:photo_id', d2);
 
 t.lookup('/user/john').data === d1;
