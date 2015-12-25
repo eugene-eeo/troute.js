@@ -9,23 +9,10 @@ troute = function() {
   };
 
   function sanitise(url) {
-    var hash = url.indexOf('#');
-    if (~hash)                    url = url.slice(0, hash);
-    if (~url.indexOf('/?'))       url = url.replace('/?', '?');
     if (url[0] == '/')            url = url.slice(1);
     if (url[url.length-1] == '/') url = url.slice(0, -1);
     return url;
   };
-
-  function parse_qs(qs, res) {
-    if (qs && res) {
-      var query = qs.split('&');
-      for (var i = 0; i < query.length; i++) {
-        var q = query[i].split('=');
-        res.query[q[0]] = escape(q[1]);
-      }
-    }
-  }
 
   var routes = info();
 
@@ -81,10 +68,7 @@ troute = function() {
   return {
     add: add,
     lookup: function(url) {
-      var u = sanitise(url).split('?');
-      var t = search(routes, u[0].split('/'), []);
-      parse_qs(u[1], t);
-      return t;
+      return search(routes, sanitise(url).split('/'), []);
     },
   };
 };

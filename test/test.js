@@ -38,31 +38,19 @@ suite('troute.lookup', function() {
     assert(m.params.c === '3');
   });
 
-  test('parses the query parameters', function() {
-    var r = troute();
-
-    r.add('user', 1);
-
-    var match = r.lookup('/user/?q=1');
-    assert(match.data === 1);
-    assert(match.query.q === '1');
-  });
-
   test('sanitises the url', function() {
     var r = troute();
 
     r.add('user', 1);
 
     var urls = [
-      '/user/?q=1',
-      '/user?q=1',
-      'user/?q=1',
-      'user?q=1',
+      '/user/',
+      '/user',
+      'user/',
     ];
     for (var i=urls.length; i--;) {
       var match = r.lookup(urls[i]);
       assert(match.data === 1);
-      assert(match.query.q === '1');
     }
   });
 });
