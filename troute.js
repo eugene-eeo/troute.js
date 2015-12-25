@@ -1,10 +1,3 @@
-// var t = troute();
-// t.add('/:username/:id', 1)
-// t.add('/:id', 2)
-// t.lookup('/1').data == 2
-// t.lookup('/user/1').data == 1
-
-
 troute = function() {
   var escape = decodeURIComponent;
   var info = function() {
@@ -26,7 +19,6 @@ troute = function() {
 
   var parse_qs = function(qs, res) {
     if (qs && res) {
-      res.query = {};
       var query = qs.split('&');
       for (var i = 0; i < query.length; i++) {
         var q = query[i].split('=');
@@ -66,6 +58,7 @@ troute = function() {
     if (!pieces.length) {
       var route = rules.route;
       return route && {
+        query: {},
         params: route.map(params),
         data: route.data,
       };
