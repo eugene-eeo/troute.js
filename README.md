@@ -1,7 +1,6 @@
 # troute.js
 
-A backtracking, fast, and correct url-matcher for Javascript,
-with support for only url capturing. It is meant to be embedded
+A tiny url-matcher for Javascript. It is meant to be embedded
 as an engine in other router projects.
 
  - No dependencies
@@ -10,9 +9,9 @@ as an engine in other router projects.
  - Bring your own [query string parser](https://github.com/component/querystring)
 
 ```js
-var t = troute();
+var t = troute({});
 t.add('/user/:name', d1);
-t.add('/user/john/:photo_id', d2);
+t.add('/user/:name/:photo_id', d2);
 
 t.lookup('/user/john').data === d1;
 t.lookup('/user/john/1').data === d2;

@@ -1,9 +1,10 @@
 troute = function() {
   function Info() {
     return {
-      next: {},     // -> {String: Info}
-      param: null,  // -> Info|null
+      next: {},
+      param: null,
       route: null,
+      capture: null,
     };
   };
 
@@ -16,8 +17,7 @@ troute = function() {
   var routes = Info();
 
   function add(pattern, data) {
-    var parts  = sanitise(pattern).split('/');
-    var params = [];
+    var parts = sanitise(pattern).split('/');
     var t = routes;
 
     for (var i = 0; i < parts.length; i++) {
@@ -26,48 +26,38 @@ troute = function() {
       t = capture
         ? t.param       || (t.param = Info())
         : t.next[part]  || (t.next[part] = Info());
-      if (capture) params.push(part.slice(1));
+      if (capture)
+        t.capture = part.slice(1);
     }
 
-    t.route = {
-      data: data,
-      map: function(args) {
-        var o = {};
-        for (var i = args.length; i--;)
-          o[params[i]] = args[i];
-        return o;
-      }
-    };
+    t.route = [data];
   };
 
-  function search(rules, pieces, params) {
-    if (!pieces.length) {
-      var route = rules.route;
-      return route && {
-        params: route.map(params),
-        data: route.data,
-      };
-    }
+  function lookup(url) {
+    var parts  = sanitise(url).split('/');
+    var params = {};
+    var tree   = routes;
 
-    var part = pieces[0];
-    var rest = pieces.slice(1);
-    var tree = rules.next[part.toLowerCase()];
+    for (var i = 0; i < parts.length; i++) {
+      var p = decodeURIComponent(parts[i]);
+      var q = tree.next[p];
+      if (q) {
+        tree = q;
+      } else if (tree = tree.param) {
+        params[tree.capture] = p;
+      } else {
+        return;
+      }
+    };
 
-    if (tree) {
-      var a = search(tree, rest, params);
-      if (a) return a;
-    }
-
-    return rules.param
-      && search(rules.param, rest, params.concat([part]));
+    return tree.route && {
+      params: params,
+      data: tree.route[0],
+    };
   };
 
   return {
     add: add,
-    lookup: function(url) {
-      return search(routes,
-                    sanitise(url).split('/').map(decodeURIComponent),
-                    []);
-    },
+    lookup: lookup,
   };
 };
