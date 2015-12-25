@@ -18,6 +18,9 @@ t.lookup('/user/john').data === d1;
 t.lookup('/user/john/1').data === d2;
 ```
 
+The order in which routes are added do not matter; the most
+specific one (i.e. the least dynamic one) will be chosen.
+
 ### Coming soon:
 
  - Syntax plugins: allow opt-in support for wildcards,
