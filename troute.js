@@ -52,7 +52,6 @@ troute = function() {
         return o;
       }
     };
-    return routes;
   };
 
   function search(rules, pieces, params) {
