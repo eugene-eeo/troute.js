@@ -29,13 +29,16 @@ suite('troute.lookup', function() {
 
     var m = r.lookup('user/1');
     assert(m.params.a === '1');
+    assert(m.data === 1);
 
     var m = r.lookup('user/1/2');
     assert(m.params.a === '2');
+    assert(m.data === 2);
 
     var m = r.lookup('user/1/2/3');
     assert(m.params.a === '1');
     assert(m.params.c === '3');
+    assert(m.data === 3);
   });
 
   test('sanitises the url', function() {
@@ -52,5 +55,10 @@ suite('troute.lookup', function() {
       var match = r.lookup(urls[i]);
       assert(match.data === 1);
     }
+  });
+
+  test('returns null or undefined if theres no match', function() {
+    var r = troute();
+    assert(!r.lookup('/'));
   });
 });
