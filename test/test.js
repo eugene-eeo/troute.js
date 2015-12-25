@@ -34,7 +34,6 @@ suite('troute.lookup', function() {
     assert(m.params.a === '2');
 
     var m = r.lookup('user/1/2/3');
-    console.log(m);
     assert(m.params.a === '1');
     assert(m.params.c === '3');
   });
