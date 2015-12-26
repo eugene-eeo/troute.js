@@ -37,15 +37,9 @@ troute = function() {
 
     for (var i = 0; i < parts.length; i++) {
       var p = decodeURIComponent(parts[i]);
-      var q = tree.s[p.toLowerCase()];
-      if (q) {
-        tree = q;
-      } else if (tree.p) {
-        tree = tree.p;
-        params[tree.n] = p;
-      } else {
-        return;
-      }
+      var n = p.toLowerCase();
+      tree = tree.s[n] || (tree.p && (params[tree.p.n] = p, tree.p));
+      if (!tree) return;
     };
 
     return tree.r && {
