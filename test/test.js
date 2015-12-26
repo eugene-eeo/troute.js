@@ -32,6 +32,11 @@ suite('troute.lookup', function() {
     assert(match.params.name === 'ONE');
   });
 
+  test('decodes the url segments', function() {
+    var match = r.lookup('/user/%2F');
+    assert(match.params.name === '/');
+  });
+
   test('returns null or undefined if theres no match', function() {
     assert(!r.lookup('/'));
   });
