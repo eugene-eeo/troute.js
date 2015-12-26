@@ -1,10 +1,10 @@
 # troute.js
 
-A tiny url-matcher for Javascript. It is meant to be embedded
-as an engine in other router projects.
+A tiny tree based url-matcher for Javascript. It is meant to be
+embedded as an engine in other router projects.
 
  - No dependencies
- - 0.7kB minified, 0.4kB with gzip
+ - 0.5kB minified, 0.3kB with gzip
  - No performance penalty as more routes are added
  - Bring your own [query string parser](https://github.com/component/querystring)
 
@@ -14,7 +14,7 @@ t.add('/user/:name', d1);
 t.add('/user/:name/:photo_id', d2);
 
 t.lookup('/user/john').data === d1;
-t.lookup('/user/john/1').data === d2;
+t.lookup('/user/john/1').params.photo_id == '1';
 ```
 
 The order in which routes are added do not matter; the most
