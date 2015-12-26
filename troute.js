@@ -1,20 +1,17 @@
 troute = function() {
-  function Info() {
-    return {
-      next: {},
-      param: null,
-      route: null,
-      name: null,
-    };
-  };
-
   function split(url) {
     if (url[0] == '/')            url = url.slice(1);
     if (url[url.length-1] == '/') url = url.slice(0, -1);
     return url.split('/');
   };
 
-  var routes = Info();
+  // tree {
+  //   s: { String->tree }  static paths
+  //   p: { String->tree }  paths after captured params
+  //   n: String            name of captured param
+  //   r: [ Object ]        included data
+  // }
+  var routes = {s:{}};
 
   function add(pattern, data) {
     var parts = split(pattern);
@@ -24,13 +21,13 @@ troute = function() {
       var part = parts[i];
       var capture = part[0] == ':';
       t = capture
-        ? t.param       || (t.param = Info())
-        : t.next[part]  || (t.next[part] = Info());
+        ? t.p       || (t.p = {s:{}})
+        : t.s[part] || (t.s[part] = {s:{}});
       if (capture)
-        t.name = part.slice(1);
+        t.n = part.slice(1);
     }
 
-    t.route = [data];
+    t.r = [data];
   };
 
   function lookup(url) {
@@ -40,19 +37,20 @@ troute = function() {
 
     for (var i = 0; i < parts.length; i++) {
       var p = decodeURIComponent(parts[i]);
-      var q = tree.next[p.toLowerCase()];
+      var q = tree.s[p.toLowerCase()];
       if (q) {
         tree = q;
-      } else if (tree = tree.param) {
-        params[tree.name] = p;
+      } else if (tree.p) {
+        tree = tree.p;
+        params[tree.n] = p;
       } else {
         return;
       }
     };
 
-    return tree.route && {
+    return tree.r && {
       params: params,
-      data: tree.route[0],
+      data: tree.r[0],
     };
   };
 
