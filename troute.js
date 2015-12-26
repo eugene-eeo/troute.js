@@ -18,13 +18,13 @@ troute = function() {
     var t = routes;
 
     for (var i = 0; i < parts.length; i++) {
-      var part = parts[i];
-      var capture = part[0] == ':';
-      if (capture)
+      var p = parts[i];
+      var c = p[0] == ':';
+      if (c)
         t.n = part.slice(1);
-      t = capture
-        ? t.p       || (t.p = {s:{}})
-        : t.s[part] || (t.s[part] = {s:{}});
+      t = c
+        ? t.p    || (t.p = {s:{}})
+        : t.s[p] || (t.s[p] = {s:{}});
     }
 
     t.r = data;
