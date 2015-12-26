@@ -32,9 +32,16 @@ suite('troute.lookup', function() {
     assert(match.params.name === 'ONE');
   });
 
-  test('decodes the url segments', function() {
-    var match = r.lookup('/user/%2F');
-    assert(match.params.name === '/');
+  test("doesn't expose the internals", function() {
+    var charMap = {
+      ':': '%3A',
+      '$': '%24',
+      '/': '%2F',
+    };
+    for (var c in charMap) {
+      var match = r.lookup('/user/' + charMap[c]);
+      assert(match.params.name === c);
+    };
   });
 
   test('returns null or undefined if theres no match', function() {

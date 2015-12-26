@@ -17,7 +17,7 @@ troute = function() {
       var name = capt ? ':' : enc(part);
       t = t[name] || (t[name] = {});
       if (capt)
-        t['~'] = part.slice(1);
+        t['$'] = part.slice(1);
     }
     t['/'] = cb;
   };
@@ -31,7 +31,7 @@ troute = function() {
       var q = dnc(u[i]);
       t = t[enc(q.toLowerCase())] || t[':'];
       if (!t) return;
-      t['~'] && (params[t['~']] = q);
+      t['$'] && (params[t['$']] = q);
     }
     if ('/' in t)
       return {
