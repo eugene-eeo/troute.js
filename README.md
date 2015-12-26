@@ -11,7 +11,7 @@ The order in which routes are added do not matter; the most
 specific one (i.e. the least dynamic one) will be chosen.
 
 ```js
-var t = troute({});
+var t = troute();
 t.add('/user/:id', f1);
 t.add('/user/:id/:photo_id', f2);
 
