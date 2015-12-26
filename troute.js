@@ -9,11 +9,11 @@ troute = function() {
   //   s: { String->tree }  static paths
   //   p: { String->tree }  paths after captured param
   //   n: String            name of captured param
-  //   r: Object            included data
+  //   r: Object            included callback
   // }
   var routes = {s:{}};
 
-  function add(pattern, data) {
+  function add(pattern, fn) {
     var parts = split(pattern);
     var t = routes;
 
@@ -27,7 +27,7 @@ troute = function() {
         : t.s[p] || (t.s[p] = {s:{}});
     }
 
-    t.r = data;
+    t.r = fn;
   };
 
   function lookup(url) {
@@ -44,7 +44,7 @@ troute = function() {
 
     return ('r' in tree) && {
       params: params,
-      data: tree.r,
+      cb: tree.r,
     };
   };
 

@@ -7,7 +7,7 @@ suite('troute.lookup', function() {
 
   test('returns the most specific match', function() {
     var match = r.lookup('user/john');
-    assert(match.data === 2);
+    assert(match.cb === 2);
   });
 
   test('sanitises the url', function() {
@@ -18,13 +18,13 @@ suite('troute.lookup', function() {
     ];
     for (var i=urls.length; i--;) {
       var match = r.lookup(urls[i]);
-      assert(match.data === 0);
+      assert(match.cb === 0);
     }
   });
 
   test('ignores the case when matching', function() {
     var match = r.lookup('/User/JoHN');
-    assert(match.data === 2);
+    assert(match.cb === 2);
   });
 
   test('preserves case in parameters', function() {
