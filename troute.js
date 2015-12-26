@@ -21,7 +21,7 @@ troute = function() {
       var p = parts[i];
       var c = p[0] == ':';
       if (c)
-        t.n = part.slice(1);
+        t.n = p.slice(1);
       t = c
         ? t.p    || (t.p = {s:{}})
         : t.s[p] || (t.s[p] = {s:{}});
