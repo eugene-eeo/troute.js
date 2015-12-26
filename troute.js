@@ -5,51 +5,46 @@ troute = function() {
     return url.split('/');
   };
 
-  // tree {
-  //   s: { String->tree }  static paths
-  //   p: { String->tree }  paths after captured param
-  //   n: String            name of captured param
-  //   r: Object            included callback
-  // }
-  var routes = {s:{}};
+  var enc = encodeURIComponent;
+  var dnc = decodeURIComponent;
 
-  function add(pattern, fn) {
-    var parts = split(pattern);
-    var t = routes;
+  var tree = {};
 
-    for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
-      var c = p[0] == ':';
-      if (c)
-        t.n = p.slice(1);
-      t = c
-        ? t.p    || (t.p = {s:{}})
-        : t.s[p] || (t.s[p] = {s:{}});
+  var add = function(url, cb) {
+    var u = split(url);
+    var t = tree;
+    for (var i = 0; i < u.length; i++) {
+      var part = u[i];
+      var capt = part[0] == ':';
+      var name = capt ? ':' : enc(part);
+      t = t[name] || (t[name] = {});
+      if (capt)
+        t['~'] = part.slice(1);
     }
-
-    t.r = fn;
+    t['/'] = cb;
   };
 
-  function lookup(url) {
-    var parts  = split(url);
+  var lookup = function(url) {
+    var u = split(url);
+    var t = tree;
     var params = {};
-    var tree   = routes;
 
-    for (var i = 0; i < parts.length; i++) {
-      var p = decodeURIComponent(parts[i]);
-      var n = p.toLowerCase();
-      tree = tree.s[n] || (params[tree.n] = p, tree.p);
-      if (!tree) return;
-    };
+    for (var i = 0; i < u.length; i++) {
+      var p = u[i];
+      var q = dnc(p);
 
-    return ('r' in tree) && {
+      t = t[enc(q.toLowerCase())] || t[':'];
+      if (!t) return;
+      t['~'] && (params[t['~']] = q);
+    }
+    return ('/' in t) && {
       params: params,
-      cb: tree.r,
+      cb: t['/'],
     };
   };
 
   return {
     add: add,
-    lookup: lookup,
+    lookup: lookup
   };
 };
